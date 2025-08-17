@@ -1,0 +1,22 @@
+{
+  "name": "3stylealgs",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "papaparse": "^5.4.1",
+    "three": "^0.172.0",
+    "three.meshline": "^1.4.0"
+  },
+  "description": "",
+  "devDependencies": {
+    "vite": "^6.0.6"
+  }
+}
