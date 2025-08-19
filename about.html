@@ -1,20 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3-Style Commutators</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3-Style Commutators</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    p {
+      margin-bottom: 15px;
+    }
+
+    a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      margin: 20px auto;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .note {
+      background: #f0f4ff;
+      border-left: 5px solid #0077cc;
+      padding: 10px 15px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .footer a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #0077cc;
+      color: white;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .footer a:hover {
+      background: #005fa3;
+    }
+  </style>
 </head>
 <body>
-    <p id="information">
-        This website allows you to view and visualize my commutators I use for solving a Rubik's Cube blindfolded. I use 3-style, which is the most advanced method for blindfolded solving. 
-        If you would like to know how this method works, please check out <a href="https://youtu.be/9KPqwwKNldc?si=o9h_jBxd-DAvLn6u">this video</a>.
-    </p>
-    <p>My primary buffer is UFR (C in Speffez). Below is a diagram of the Speffez notation. Since 3-style involves cycling 3 pieces (including the buffer), that's why you choose 2 other pieces to cycle!</p>
-    <img src="speffez.png" alt="Speffez notation diagram">
-    <p>Note: You may not cycle to the same piece because that is impossible in 3-style. Examples of invalid cycles are UFR-UBL-LBU or UFR-FUL-LUF. With that said, you may not cycle to the buffer piece.</p>
-    <p>Also, here is a link to my public spreadsheet with my algorithms: <a href="https://docs.google.com/spreadsheets/d/1twj2CfYFve5Ba_D8XOwcbXxWaSVKKwZz1QagW4H0uyM/edit?usp=sharing">Here</a></p>
-    <a href="index.html">Back</a>
+  <div class="container">
+    <h1>3-Style Commutators</h1>
 
+    <p>
+      This website allows you to view and visualize the commutators I use for solving a Rubik's Cube blindfolded. 
+      I use <strong>3-style</strong>, which is the most advanced method for blindfolded solving. 
+      If you’d like to know how this method works, check out 
+      <a href="https://youtu.be/9KPqwwKNldc?si=o9h_jBxd-DAvLn6u" target="_blank">this video</a>.
+    </p>
+
+    <p>
+      My primary buffer is <strong>UFR</strong> (C in Speffez). Below is a diagram of the Speffez notation. 
+      Since 3-style involves cycling 3 pieces (including the buffer), that’s why you choose 2 other pieces to cycle!
+    </p>
+
+    <img src="speffez.png" alt="Speffez notation diagram">
+
+    <div class="note">
+      <p>
+        <strong>Note:</strong> You may not cycle to the same piece, because that is impossible in 3-style.  
+        Examples of invalid cycles are <em>UFR-UBL-LBU</em> or <em>UFR-FUL-LUF</em>.  
+        With that said, you may not cycle to the buffer piece.
+      </p>
+    </div>
+
+    <p>
+      Also, here’s a link to my public spreadsheet with all my algorithms:  
+      <a href="https://docs.google.com/spreadsheets/d/1twj2CfYFve5Ba_D8XOwcbXxWaSVKKwZz1QagW4H0uyM/edit?usp=sharing" target="_blank">
+        View Spreadsheet
+      </a>
+    </p>
+    <p>
+    Edge commutators and parity algorithms are still under development and will be available soon.
+    </p>
+    <h2>Instructions</h2>
+    <p>
+        Select two pieces to see the algorithm for <strong>UFR → [First Piece] → [Second Piece]</strong>. Use the left and right arrow keys to navigate between moves.
+    </p>
+    <div class="footer">
+        <a href="index.html">⬅ Back</a>
+    </div>
+  </div>
 </body>
 </html>

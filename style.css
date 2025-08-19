@@ -1,0 +1,114 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif; /* clean, modern font */
+}
+
+/* Make sure 3D canvas fills the screen */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111; /* dark background for contrast */
+  color: #eee;
+}
+
+/* Position form elements above the cube */
+#overlay {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 20, 20, 0.85);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  backdrop-filter: blur(10px);
+  min-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* Headings */
+#overlay h1 {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Form styling */
+#pieces {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+#pieces input, 
+#pieces select, 
+#pieces button {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+}
+
+#pieces input, 
+#pieces select {
+  background: #222;
+  color: #eee;
+  border: 1px solid #333;
+}
+
+#pieces input:focus, 
+#pieces select:focus {
+  outline: none;
+  border-color: #555;
+}
+
+/* Button */
+#pieces button {
+  background: #444;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#pieces button:hover {
+  background: #666;
+}
+
+/* Results section */
+#results {
+  margin-top: 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+#results div {
+  margin: 0.4rem 0;
+}
+
+#results span {
+  font-weight: 600;
+  color: #0ff; /* accent color for clarity */
+}
+
+.button-link {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background-color: #444;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.button-link:hover {
+  background-color: #666;
+}

@@ -1,86 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3 Style Visualizer</title>
-    <link rel="icon" href="333bf.svg" href="favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3 Style Visualizer</title>
+  <link rel="icon" href="333bf.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Cube background container -->
+  <div id="three-container"></div>
+
+  <!-- Overlay UI -->
+  <div id="overlay">
     <h1>3-Style Algorithms</h1>
     <form id="pieces">
+      <div>
         <h2>First piece</h2>
-        <label>Enter first piece:</label>
+        <label for="firstPiece">Select first piece:</label>
         <select id="firstPiece">
-            <option value="UBL">UBL (A)</option>
-            <option value="UBR">UBR (B)</option>
-            <option value="UFL">UFL (D)</option>
-            <option value="LBU">LBU (E)</option>
-            <option value="LFU">LFU (F)</option>
-            <option value="LDF">LDF (G)</option>
-            <option value="LDB">LDB (H)</option>
-            <option value="FUL">FUL (I)</option>
-            <option value="FDR">FDR (K)</option>
-            <option value="FDL">FDL (L)</option>
-            <option value="RUB">RUB (N)</option>
-            <option value="RDB">RDB (O)</option>
-            <option value="RDF">RDF (P)</option>
-            <option value="BUR">BUR (Q)</option>
-            <option value="BUL">BUL (R)</option>
-            <option value="BDL">BDL (S)</option>
-            <option value="BDR">BDR (T)</option>
-            <option value="DFL">DFL (U)</option>
-            <option value="DFR">DFR (V)</option>
-            <option value="DBR">DBR (W)</option>
-            <option value="DBL">DBL (X)</option>
+          <option value="UBL">UBL (A)</option>
+          <option value="UBR">UBR (B)</option>
+          <option value="UFL">UFL (D)</option>
+          <option value="LBU">LBU (E)</option>
+          <option value="LFU">LFU (F)</option>
+          <option value="LDF">LDF (G)</option>
+          <option value="LDB">LDB (H)</option>
+          <option value="FUL">FUL (I)</option>
+          <option value="FDR">FDR (K)</option>
+          <option value="FDL">FDL (L)</option>
+          <option value="RUB">RUB (N)</option>
+          <option value="RDB">RDB (O)</option>
+          <option value="RDF">RDF (P)</option>
+          <option value="BUR">BUR (Q)</option>
+          <option value="BUL">BUL (R)</option>
+          <option value="BDL">BDL (S)</option>
+          <option value="BDR">BDR (T)</option>
+          <option value="DFL">DFL (U)</option>
+          <option value="DFR">DFR (V)</option>
+          <option value="DBR">DBR (W)</option>
+          <option value="DBL">DBL (X)</option>
         </select>
-        <br />
+      </div>
+
+      <div>
         <h2>Second piece</h2>
-        <label>Enter second piece:</label>
+        <label for="secondPiece">Select second piece:</label>
         <select id="secondPiece">
-            <option value="UBL">UBL (A)</option>
-            <option value="UBR">UBR (B)</option>
-            <option value="UFL">UFL (D)</option>
-            <option value="LBU">LBU (E)</option>
-            <option value="LFU">LFU (F)</option>
-            <option value="LDF">LDF (G)</option>
-            <option value="LDB">LDB (H)</option>
-            <option value="FUL">FUL (I)</option>
-            <option value="FDR">FDR (K)</option>
-            <option value="FDL">FDL (L)</option>
-            <option value="RUB">RUB (N)</option>
-            <option value="RDB">RDB (O)</option>
-            <option value="RDF">RDF (P)</option>
-            <option value="BUR">BUR (Q)</option>
-            <option value="BUL">BUL (R)</option>
-            <option value="BDL">BDL (S)</option>
-            <option value="BDR">BDR (T)</option>
-            <option value="DFL">DFL (U)</option>
-            <option value="DFR">DFR (V)</option>
-            <option value="DBR">DBR (W)</option>
-            <option value="DBL">DBL (X)</option>
+          <option value="UBL">UBL (A)</option>
+          <option value="UBR">UBR (B)</option>
+          <option value="UFL">UFL (D)</option>
+          <option value="LBU">LBU (E)</option>
+          <option value="LFU">LFU (F)</option>
+          <option value="LDF">LDF (G)</option>
+          <option value="LDB">LDB (H)</option>
+          <option value="FUL">FUL (I)</option>
+          <option value="FDR">FDR (K)</option>
+          <option value="FDL">FDL (L)</option>
+          <option value="RUB">RUB (N)</option>
+          <option value="RDB">RDB (O)</option>
+          <option value="RDF">RDF (P)</option>
+          <option value="BUR">BUR (Q)</option>
+          <option value="BUL">BUL (R)</option>
+          <option value="BDL">BDL (S)</option>
+          <option value="BDR">BDR (T)</option>
+          <option value="DFL">DFL (U)</option>
+          <option value="DFR">DFR (V)</option>
+          <option value="DBR">DBR (W)</option>
+          <option value="DBL">DBL (X)</option>
         </select>
-        <button type="submit" id="formButton">View Algorithm</button>
+      </div>
+
+      <button type="submit" id="formButton">View Algorithm</button>
     </form>
 
-    Viewing comm for UFR-<text id="firstPieceName"></text>-<text id="secondPieceName"></text>
+    <p>
+      Viewing comm for UFR-
+      <span id="firstPieceName"></span>-
+      <span id="secondPieceName"></span>
+    </p>
 
-    <div>Comm: <span id="commResult"></span></div>
+    <div id="results">
+      <div>Comm: <span id="commResult"></span></div>
+      <div>Moves: <span id="movesResult"></span></div>
+    </div>
 
-    <div>Moves: <span id="movesResult"></span></div>
-    <div id="three-container"></div>
+    <div style="margin-top:1rem; text-align:center;">
+    <a href="about.html" class="button-link">About</a>
+    </div>
+  </div>
 
-    <a href="about.html">About</a>
+  <!-- Three.js -->
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
+    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+    // Three.js setup goes in app.js
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js"></script>
 
-    <!-- Include THREE.js and OrbitControls from the official CDN -->
-    <script type="module">
-      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
-      import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
-      
-      // Your three.js code goes here, where you can use THREE and OrbitControls
-    </script>
 
-    <!-- Add app.js as a module script -->
-    <script type="module" src="app.js"></script>
+  <!-- Your app logic -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>

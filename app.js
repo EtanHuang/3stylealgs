@@ -1,9 +1,5 @@
 import * as THREE from 'three'; // Import three.js
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { MeshLine, MeshLineMaterial } from 'three.meshline';
-import stateMapping from './cube-side-mapping';
-//import { rubiks } from './cube-functions.js';
-
 
 const piecesMap = new Map([
   ["UBL", 0], ["UBR", 1], ["UFL", 2], ["LBU", 3], ["LFU", 4], ["LDF", 5], ["LDB", 6],
@@ -47,7 +43,6 @@ function initialize() {
         }
     }
     cubelets = [];
-    //
 
     var ambientLight = new THREE.AmbientLight(0xffffff, 2);
     scene.add( ambientLight );
@@ -57,10 +52,12 @@ function initialize() {
     scene.add( light );
 
     createCube(scene);
-    camera.position.set(5, 4, 3);
-    camera.lookAt(0, 0, 0); 
+    camera.position.set(5, 2, 4);
+    // orbit.target.set(0, -1, 0); // shift rotation target down
+    // orbit.update();
+    camera.lookAt(2, 1, 1); 
     scene.rotation.y = -Math.PI / 4 - Math.PI / 8;
-    animate(cubelets, scene, camera, renderer);  // Start the animation loop
+    animate(cubelets, scene, camera, renderer, orbit);
 }
 
 // Function to handle canvas dimensions for high-DPI scaling
@@ -100,9 +97,6 @@ function createCamera() {
     return camera;
 }
 
-
-
-
 function createCube(scene) {
     const cubeGroup = new THREE.Group(); // Create the group outside the loop
 
@@ -115,7 +109,6 @@ function createCube(scene) {
         new THREE.MeshBasicMaterial({ color: 0xFFA500 }), // Orange
         new THREE.MeshBasicMaterial({ color: 0xFF0000 })  // Red
     ];
-
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const spacing = 1.015;
@@ -148,6 +141,7 @@ function createCube(scene) {
         }
     }
     scene.add(cubeGroup);
+    cubeGroup.position.y = -3;
     return cubeGroup;
 }
 
@@ -175,33 +169,6 @@ function handleRotations(rotations) {
             rotateSide(axis, layer, direction);
         })
     }
-
-
-function updateCubeColors(cubelets, rubiksArray) {
-  for (let i = 0; i < 27; i++) {
-    let colourMap = stateMapping[i] || {};
-    const cube = cubelets[i];
-
-    for (const [faceIndex, value] of Object.entries(colourMap)) {
-      if (value !== null) {
-        const [face, index] = value;
-        const color = rubiksArray[face][index];
-        const hex = colourMap[color];
-
-        cube.material[faceIndex].color.setHex(hex);
-      }
-    }
-  }
-}
-
-const rubiksArray = [
-  Array(9).fill('O'), // Left
-  Array(9).fill('B'), // Back
-  Array(9).fill('W'), // Up
-  Array(9).fill('R'), // Right
-  Array(9).fill('Y'), // Down
-  Array(9).fill('G')  // Front
-];
 
 function rotateCube(moves) {
     const moveList = moves.trim().split(" ");
@@ -251,32 +218,22 @@ function rotateCube(moves) {
             rotations.push([2, 0, 1])
             rotations.push([2, 0, 1])
         }
-        // if (move === "Lw") {
-        //     //rotations.push([2, 1, 1])
-        //     rotations.push([2, 2, 1])
-        // }
-        // if (move === "Lw'") {
-        //     //rotations.push([2, 1, -1])
-        //     rotations.push([2, 2, -1])
-        // }
     });
     console.log(rotations)
     handleRotations(rotations)
     handleRotations(rotations)
-    //updateCubeColors(cubelets, rubiksArray);
 }
 
 
 // Function to animate the cube
 function animate(cube, scene, camera, renderer, orbit) {
     function animateLoop() {
-        requestAnimationFrame(animateLoop);  // Request the next frame
-        //cube.rotation.x += 0.01;  // Rotate the cube
-        //cube.rotation.y += 0.01;
-        // orbit.update();  // Update the OrbitControls
-        renderer.render(scene, camera);  // Render the scene
+        requestAnimationFrame(animateLoop);  
+        //TWEEN.update();
+        orbit.update();  // keep controls smooth + prevent snapping
+        renderer.render(scene, camera);  
     }
-    animateLoop();  // Start the animation loop
+    animateLoop();
 }
 
 function handleMove(move) {
@@ -375,7 +332,7 @@ function setupFormListener() {
         document.getElementById('firstPieceName').innerHTML = first;
         document.getElementById('secondPieceName').innerHTML = second;
 
-        const url = `http://localhost:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        const url = `http://127.0.0.1:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
 
         try {
             const response = await fetch(url, { method: 'GET' });
@@ -393,8 +350,6 @@ function setupFormListener() {
             } else {
                 document.getElementById('commResult').innerText = `${data.comm}`;
                 document.getElementById('movesResult').innerText = `${data.moves}`;
-                // scene = createScene()
-                // createCube(scene)
                 initialize();
                 rotateCube(data.moves);
                 current_move = 0

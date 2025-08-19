@@ -15,8 +15,17 @@
     "three": "^0.172.0",
     "three.meshline": "^1.4.0"
   },
-  "description": "",
   "devDependencies": {
-    "vite": "^6.0.6"
-  }
+    "vite": "^6.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EtanHuang/3stylealgs.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EtanHuang/3stylealgs/issues"
+  },
+  "homepage": "https://github.com/EtanHuang/3stylealgs#readme",
+  "description": ""
 }
