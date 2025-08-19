@@ -332,7 +332,7 @@ function setupFormListener() {
         document.getElementById('firstPieceName').innerHTML = first;
         document.getElementById('secondPieceName').innerHTML = second;
 
-        const url = `http://127.0.0.1:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        const url = `https://3styleapi-git-main-etans-projects-e07abe8e.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
 
         try {
             const response = await fetch(url, { method: 'GET' });
