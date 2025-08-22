@@ -120,9 +120,13 @@ for i in range(len(comms)):
 #print(moves)
 
 
-@app.route('/')
+@app.route("/")
 def home():
-    return 'Welcome to the Flask API!'
+    return render_template("index.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 @app.route('/get_algorithm', methods=['GET'])
 @cross_origin(origins=['http://localhost:5173','null'])
