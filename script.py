@@ -119,14 +119,9 @@ for i in range(len(comms)):
             moves[i].append(move)
 
 @app.route('/get_algorithm', methods=['GET'])
-@cross_origin(origins=['http://localhost:5173','null'])
 def get_algorithm():
-    print("Request received")
-    
-    # Get query parameters
     first_piece = request.args.get('firstPiece')
     second_piece = request.args.get('secondPiece')
-    print(first_piece, second_piece)
     if not first_piece or not second_piece:
         return jsonify({"error": "Invalid request. Missing query parameters."}), 400
 
@@ -136,23 +131,7 @@ def get_algorithm():
     except ValueError:
         return jsonify({"error": "Invalid piece values. Must be integers."}), 400
 
-    comm = comms[first][second]
-    move = moves[first][second]
-    print(comm, move)
-    response = jsonify({"comm": comm, "moves": move})
-    print(response)
-    return response
-
 if __name__ == '__main__':
     app.run(debug=True)
 
-alg = input("Enter letter pair").upper()
-first = alg[0].upper()
-second = alg[1].upper()
-move = moves[letterToNumberMap[first]][letterToNumberMap[second]]
-if move == '':
-    print("Same piece")
-else:
-    print(comms[letterToNumberMap[first]][letterToNumberMap[second]])
-    print(moves[letterToNumberMap[first]][letterToNumberMap[second]])
 
