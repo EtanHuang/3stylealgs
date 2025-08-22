@@ -141,7 +141,7 @@ function createCube(scene) {
         }
     }
     scene.add(cubeGroup);
-    cubeGroup.position.y = -3;
+    //cubeGroup.position.y = -3;
     return cubeGroup;
 }
 
