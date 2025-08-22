@@ -117,16 +117,6 @@ for i in range(len(comms)):
             move += " ".join(reverse_moves(setup))
             move = " ".join(cancel_moves(move))
             moves[i].append(move)
-#print(moves)
-
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
 
 @app.route('/get_algorithm', methods=['GET'])
 @cross_origin(origins=['http://localhost:5173','null'])
