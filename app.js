@@ -175,7 +175,7 @@ function rotateCube(moves) {
     all_moves = moveList
     const rotations = []
     moveList.forEach(move => {
-        console.log(move)
+        //console.log(move)
         if (move === "F") {
             rotations.push([0, 2, 0])
         }
@@ -219,7 +219,7 @@ function rotateCube(moves) {
             rotations.push([2, 0, 1])
         }
     });
-    console.log(rotations)
+    //console.log(rotations)
     handleRotations(rotations)
     handleRotations(rotations)
 }
