@@ -324,6 +324,11 @@ document.addEventListener('keydown', (event) => {
 
 // Function to set up the form listener
 function setupFormListener() {
+  document.getElementById('pieces').addEventListener('keydown',  function(event) {
+        if (event.keyCode === 13) {
+            document.getElementById('formButton').click();
+        }
+    });
     document.getElementById('pieces').addEventListener('submit', async (event) => {
         event.preventDefault();
         const first = document.getElementById('firstPiece').value;
