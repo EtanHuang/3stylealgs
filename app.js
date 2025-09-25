@@ -427,7 +427,7 @@ function setupFormListener() {
                 console.log(document.getElementById('movesResult').innerText)
                 
                 //all_moves = displayMoves(data.moves); 
-                current_move = 0;
+                current_move = 0; 
                 //highlightMove(current_move);
                 //rotateCube(data.moves.split(/\s+/));
             }
