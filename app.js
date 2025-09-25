@@ -1,5 +1,7 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
 
 const piecesMap = new Map([
   ["UBL", 0], ["UBR", 1], ["UFL", 2], ["LBU", 3], ["LFU", 4], ["LDF", 5], ["LDB", 6],
@@ -142,6 +144,7 @@ function createCube(scene) {
     }
     scene.add(cubeGroup);
     //cubeGroup.position.y = -3;
+    //cubeGroup.position.y = -3;
     return cubeGroup;
 }
 
@@ -175,6 +178,7 @@ function rotateCube(moves) {
     all_moves = moveList
     const rotations = []
     moveList.forEach(move => {
+        //console.log(move)
         //console.log(move)
         if (move === "F") {
             rotations.push([0, 2, 0])
@@ -218,8 +222,25 @@ function rotateCube(moves) {
             rotations.push([2, 0, 1])
             rotations.push([2, 0, 1])
         }
+        if (move === "Lw") {
+            rotations.push([2, 2, 0])
+            rotations.push([2, 1, 0])
+        }
+        if (move === "Lw'") {
+            rotations.push([2, 2, 1])
+            rotations.push([2, 1, 1])
+        }
+        if (move == "x") {
+            rotations.push([2, 2, 1])
+            rotations.push([2, 1, 1])
+            rotations.push([2, 0, 1])
+        }
+        if (move == "x'") {
+            rotations.push([2, 2, 0])
+            rotations.push([2, 1, 0])
+            rotations.push([2, 0, 0])
+        }
     });
-    //console.log(rotations)
     handleRotations(rotations)
     handleRotations(rotations)
 }
@@ -290,6 +311,16 @@ function handleMove(move) {
     if (move === "M") {
         rotateSide('z', 0, 1);
     }
+    if (move === "x") {
+        rotateSide('z', 1, 1);
+        rotateSide('z', 0, 1);
+        rotateSide('z', -1, 1);
+    }
+    if (move === "x'") {
+        rotateSide('z', 1, -1);
+        rotateSide('z', 0, -1);
+        rotateSide('z', -1, -1);
+    }
 }
 
 function getInverseMove(move) {
@@ -302,7 +333,38 @@ function getInverseMove(move) {
     }
 }
 
-let current_move
+
+function displayMoves(movesString) {
+    const movesContainer = document.getElementById('movesResult');
+    movesContainer.innerHTML = ''; 
+
+    const movesArray = movesString.trim().split(/\s+/);
+
+    const spans = movesArray.map((move, index) => {
+        const span = document.createElement('span');
+        span.innerText = move.trim();
+        span.id = `move-${index}`;
+        span.style.padding = '0 4px';
+        movesContainer.appendChild(span);
+        return span;
+    });
+
+    return spans; 
+}
+
+// function highlightMove(current_move) {
+//     all_moves.forEach((span, index) => {
+//         if (index === current_move) {
+//             span.style.backgroundColor = 'yellow';
+//             span.style.fontWeight = 'bold';
+//         } else {
+//             span.style.backgroundColor = '';
+//             span.style.fontWeight = '';
+//         }
+//     });
+// }
+
+let current_move;
 document.addEventListener('keydown', (event) => {
     //console.log(all_moves)
     switch (event.key) {
@@ -318,17 +380,18 @@ document.addEventListener('keydown', (event) => {
             }
             break
     }
-    //console.log(current_move)
+    console.log(current_move)
+    //highlightMove(current_move);
 })
-
 
 // Function to set up the form listener
 function setupFormListener() {
-  document.getElementById('pieces').addEventListener('keydown',  function(event) {
+    document.getElementById('pieces').addEventListener('keydown',  function(event) {
         if (event.keyCode === 13) {
             document.getElementById('formButton').click();
         }
     });
+    
     document.getElementById('pieces').addEventListener('submit', async (event) => {
         event.preventDefault();
         const first = document.getElementById('firstPiece').value;
@@ -337,7 +400,9 @@ function setupFormListener() {
         document.getElementById('firstPieceName').innerHTML = first;
         document.getElementById('secondPieceName').innerHTML = second;
 
-        const url = `https://3styleapi.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        //const url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        const url = `http://3styleapi.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        //const url = `https://3styleapi-git-main-etans-projects-e07abe8e.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
 
         try {
             const response = await fetch(url, { method: 'GET' });
@@ -345,7 +410,7 @@ function setupFormListener() {
             if (!response.ok) {
                 throw new Error('Failed to fetch the algorithm');
             }
-
+            //console.log(response)
             const data = await response.json();
 
             if (data.comm == '' && data.moves == '') {
@@ -357,7 +422,14 @@ function setupFormListener() {
                 document.getElementById('movesResult').innerText = `${data.moves}`;
                 initialize();
                 rotateCube(data.moves);
-                current_move = 0
+                console.log(data.moves)
+                displayMoves(data.moves)
+                console.log(document.getElementById('movesResult').innerText)
+                
+                //all_moves = displayMoves(data.moves); 
+                current_move = 0;
+                //highlightMove(current_move);
+                //rotateCube(data.moves.split(/\s+/));
             }
         } catch (error) {
             console.error('Error:', error);
