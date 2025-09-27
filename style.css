@@ -111,3 +111,9 @@ html, body {
 .button-link:hover {
   background-color: #666;
 }
+
+.highlight {
+  background-color: yellow; 
+  color: black;
+  font-weight: bold;
+}

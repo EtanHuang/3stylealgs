@@ -350,17 +350,34 @@ function displayMoves(movesString) {
     return spans; 
 }
 
-// function highlightMove(current_move) {
-//     all_moves.forEach((span, index) => {
-//         if (index === current_move) {
-//             span.style.backgroundColor = 'yellow';
-//             span.style.fontWeight = 'bold';
-//         } else {
-//             span.style.backgroundColor = '';
-//             span.style.fontWeight = '';
-//         }
-//     });
-// }
+function highlightMove(current_move) {
+    //console.log("current move", current_move)
+    if (current_move == 0) {
+        var second_letter = document.getElementById("move-" + 1);
+        second_letter.classList.remove('highlight');
+        var first_letter = document.getElementById("move-" + 0);
+        first_letter.classList.add('highlight');
+    }
+    else if (current_move == all_moves.length - 1) {
+        var last_letter = document.getElementById("move-" + current_move);
+        last_letter.classList.add('highlight');
+        var previous_letter = document.getElementById(`move-${current_move - 1}`);
+        previous_letter.classList.remove('highlight');
+    }
+    else {
+        var next_move_index = `move-${current_move + 1}`;
+        var move_index = "move-" + current_move;
+        var previous_move_index = `move-${current_move - 1}`;
+        //console.log(previous_move_index);
+        var next_move_letter = document.getElementById(next_move_index);
+        var current_move_letter = document.getElementById(move_index);
+        var previous_move_letter = document.getElementById(previous_move_index);
+        //console.log(current_move_letter);
+        next_move_letter.classList.remove('highlight');
+        current_move_letter.classList.add('highlight');
+        previous_move_letter.classList.remove('highlight');
+    }
+}
 
 let current_move;
 document.addEventListener('keydown', (event) => {
@@ -379,7 +396,7 @@ document.addEventListener('keydown', (event) => {
             break
     }
     console.log(current_move)
-    //highlightMove(current_move);
+    highlightMove(current_move);
 })
 
 // Function to set up the form listener
@@ -398,7 +415,7 @@ function setupFormListener() {
         document.getElementById('firstPieceName').innerHTML = first;
         document.getElementById('secondPieceName').innerHTML = second;
 
-        //const url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        //const url = `http://127.0.0.1:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
         const url = `http://3styleapi.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
         //const url = `https://3styleapi-git-main-etans-projects-e07abe8e.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
 
@@ -420,13 +437,13 @@ function setupFormListener() {
                 document.getElementById('movesResult').innerText = `${data.moves}`;
                 initialize();
                 rotateCube(data.moves);
-                console.log(data.moves)
+                //console.log(data.moves)
                 displayMoves(data.moves)
-                console.log(document.getElementById('movesResult').innerText)
+                //console.log(document.getElementById('movesResult').innerText)
                 
                 //all_moves = displayMoves(data.moves); 
                 current_move = 0; 
-                //highlightMove(current_move);
+                highlightMove(current_move);
                 //rotateCube(data.moves.split(/\s+/));
             }
         } catch (error) {
@@ -436,3 +453,5 @@ function setupFormListener() {
         }
     });
 }
+
+
