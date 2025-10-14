@@ -1,10 +1,16 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
 import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
 
-const piecesMap = new Map([
+const cornersMap = new Map([
   ["UBL", 0], ["UBR", 1], ["UFL", 2], ["LBU", 3], ["LFU", 4], ["LDF", 5], ["LDB", 6],
   ["FUL", 7], ["FDR", 8], ["FDL", 9], ["RUB", 10], ["RDB", 11], ["RDF", 12], ["BUR", 13],
   ["BUL", 14], ["BDL", 15], ["BDR", 16], ["DFL", 17], ["DFR", 18], ["DBR", 19], ["DBL", 20]
+]);
+
+const edgesMap = new Map([
+  ["UB", 0], ["UR", 1], ["UL", 2], ["LU", 3], ["LF", 4], ["LD", 5], ["LB", 6],
+  ["FR", 7], ["FD", 8], ["FL", 9], ["RU", 10], ["RB", 11], ["RD", 12], ["RF", 13],
+  ["BU", 14], ["BL", 15], ["BD", 16], ["BR", 17], ["DF", 18], ["DR", 19], ["DB", 20], ["DL", 21]
 ]);
 
 const container = document.getElementById('three-container');
@@ -176,13 +182,17 @@ function rotateCube(moves) {
     all_moves = moveList
     const rotations = []
     moveList.forEach(move => {
-        //console.log(move)
-        //console.log(move)
         if (move === "F") {
-            rotations.push([0, 2, 0])
+            rotations.push([0, 2, 0]);
         }
         if (move === "F'") {
-            rotations.push([0, 2, 1])
+            rotations.push([0, 2, 1]);
+        }
+        if (move === "S") {
+            rotations.push([0, 1, 0]);
+        }
+        if (move === "S'") {
+            rotations.push([0, 1, 1]);
         }
         if (move === "U'") {
             rotations.push([1, 2, 1])
@@ -190,7 +200,7 @@ function rotateCube(moves) {
         if (move === "U") {
             rotations.push([1, 2, 0])
         }
-        if (move === "U2") {
+        if (move === "U2" || move === "U2'") {
             rotations.push([1, 2, 0])
             rotations.push([1, 2, 0])
         }
@@ -205,6 +215,10 @@ function rotateCube(moves) {
             rotations.push([1, 0, 1])
         }
         if (move === "L") {
+            rotations.push([2, 2, 0])
+        }
+        if (move === "L2") {
+            rotations.push([2, 2, 0])
             rotations.push([2, 2, 0])
         }
         if (move === "L'") {
@@ -228,6 +242,14 @@ function rotateCube(moves) {
             rotations.push([2, 2, 1])
             rotations.push([2, 1, 1])
         }
+        if (move === "Uw") {
+            rotations.push([1, 2, 0])
+            rotations.push([1, 1, 0])
+        }
+        if (move === "Uw'") {
+            rotations.push([1, 2, 1])
+            rotations.push([1, 1, 1])
+        }
         if (move == "x") {
             rotations.push([2, 2, 1])
             rotations.push([2, 1, 1])
@@ -238,6 +260,18 @@ function rotateCube(moves) {
             rotations.push([2, 1, 0])
             rotations.push([2, 0, 0])
         }
+        if (move == "M2") {
+            rotations.push([2, 1, 0]);  
+            rotations.push([2, 1, 0]);  
+        }
+        if (move == "E2") {
+            rotations.push([1, 1, 0]);
+            rotations.push([1, 1, 0]);
+        }
+        if (move === "M") rotations.push([2, 1, 0]);     
+        if (move === "M'") rotations.push([2, 1, 1]);
+        if (move === "E") rotations.push([1, 1, 1]);      
+        if (move === "E'") rotations.push([1, 1, 0]);
     });
     handleRotations(rotations)
     handleRotations(rotations)
@@ -256,19 +290,26 @@ function animate(cube, scene, camera, renderer, orbit) {
 }
 
 function handleMove(move) {
+    console.log(move)
     if (move === "F") {
         rotateSide('x', 1, -1)
     }
     if (move === "F'") {
         rotateSide('x', 1, 1);
     }
-    if (move === "U'") {
-        rotateSide('y', 1, 1);
+    if (move === "S") {
+        rotateSide('x', 0, -1)
+    }
+    if (move === "S'") {
+        rotateSide('x', 0, 1);
     }
     if (move === "U") {
         rotateSide('y', 1, -1);
     }
-    if (move === "U2") {
+    if (move === "U'") {
+        rotateSide('y', 1, 1);
+    }
+    if (move === "U2" || move === "U2'") {
         rotateSide('y', 1, -1);
         rotateSide('y', 1, -1);
     }
@@ -278,11 +319,25 @@ function handleMove(move) {
     if (move === "D") {
         rotateSide('y', -1, 1);
     }
+    if (move === "E") {
+        rotateSide('y', 0, 1);
+    }
+    if (move === "E'") {
+        rotateSide('y', 0, -1);
+    }
+    if (move === "E2") {
+        rotateSide('y', 0, -1);
+        rotateSide('y', 0, -1);
+    }
     if (move === "D2") {
         rotateSide('y', -1, 1);
         rotateSide('y', -1, 1);
     }
     if (move === "L") {
+        rotateSide('z', 1, -1);
+    }
+    if (move === "L2") {
+        rotateSide('z', 1, -1);
         rotateSide('z', 1, -1);
     }
     if (move === "L'") {
@@ -306,7 +361,22 @@ function handleMove(move) {
         rotateSide('z', 1, 1);
         rotateSide('z', 0, 1);
     }
+    if (move === "Uw") {
+        rotateSide('y', 1, -1);
+        rotateSide('y', 0, -1);
+    }
+    if (move === "Uw'") {
+        rotateSide('y', 1, 1);
+        rotateSide('y', 0, 1);
+    }
     if (move === "M") {
+        rotateSide('z', 0, -1);
+    }
+    if (move === "M'") {
+        rotateSide('z', 0, 1);
+    }
+    if (move === "M2") {
+        rotateSide('z', 0, 1);
         rotateSide('z', 0, 1);
     }
     if (move === "x") {
@@ -322,7 +392,7 @@ function handleMove(move) {
 }
 
 function getInverseMove(move) {
-    if (move.endsWith("2")) {
+    if (move.endsWith("2") || move.endsWith("2'")) {
         return move; // 180-degree turns are their own inverse
     } else if (move.endsWith("'")) {
         return move.slice(0, -1); // Remove the apostrophe
@@ -351,7 +421,6 @@ function displayMoves(movesString) {
 }
 
 function highlightMove(current_move) {
-    //console.log("current move", current_move)
     if (current_move == 0) {
         var second_letter = document.getElementById("move-" + 1);
         second_letter.classList.remove('highlight');
@@ -368,11 +437,9 @@ function highlightMove(current_move) {
         var next_move_index = `move-${current_move + 1}`;
         var move_index = "move-" + current_move;
         var previous_move_index = `move-${current_move - 1}`;
-        //console.log(previous_move_index);
         var next_move_letter = document.getElementById(next_move_index);
         var current_move_letter = document.getElementById(move_index);
         var previous_move_letter = document.getElementById(previous_move_index);
-        //console.log(current_move_letter);
         next_move_letter.classList.remove('highlight');
         current_move_letter.classList.add('highlight');
         previous_move_letter.classList.remove('highlight');
@@ -381,7 +448,6 @@ function highlightMove(current_move) {
 
 let current_move;
 document.addEventListener('keydown', (event) => {
-    //console.log(all_moves)
     switch (event.key) {
         case 'ArrowRight':
             handleMove(all_moves[current_move])
@@ -395,9 +461,9 @@ document.addEventListener('keydown', (event) => {
             }
             break
     }
-    console.log(current_move)
     highlightMove(current_move);
 })
+
 
 // Function to set up the form listener
 function setupFormListener() {
@@ -406,18 +472,23 @@ function setupFormListener() {
             document.getElementById('formButton').click();
         }
     });
-    
+
+    const cornerButton = document.getElementById('corners');
+    cornerButton.classList.add("active");
+    const edgeButton = document.getElementById('edges');
+
     document.getElementById('pieces').addEventListener('submit', async (event) => {
         event.preventDefault();
         const first = document.getElementById('firstPiece').value;
         const second = document.getElementById('secondPiece').value;
-
         document.getElementById('firstPieceName').innerHTML = first;
         document.getElementById('secondPieceName').innerHTML = second;
 
-        //const url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
-        const url = `https://3styleapi.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
-        //const url = `https://3styleapi-git-main-etans-projects-e07abe8e.vercel.app/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        //const url = `http://127.0.0.1:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
+        let url = ''
+        console.log(cornerButton.classList)
+        if (cornerButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${cornersMap.get(first)}&secondPiece=${cornersMap.get(second)}`;
+        else if (edgeButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/edges?firstPiece=${edgesMap.get(first)}&secondPiece=${edgesMap.get(second)}`;
 
         try {
             const response = await fetch(url, { method: 'GET' });
@@ -425,7 +496,6 @@ function setupFormListener() {
             if (!response.ok) {
                 throw new Error('Failed to fetch the algorithm');
             }
-            //console.log(response)
             const data = await response.json();
 
             if (data.comm == '' && data.moves == '') {
@@ -437,14 +507,9 @@ function setupFormListener() {
                 document.getElementById('movesResult').innerText = `${data.moves}`;
                 initialize();
                 rotateCube(data.moves);
-                //console.log(data.moves)
                 displayMoves(data.moves)
-                //console.log(document.getElementById('movesResult').innerText)
-                
-                //all_moves = displayMoves(data.moves); 
                 current_move = 0; 
                 highlightMove(current_move);
-                //rotateCube(data.moves.split(/\s+/));
             }
         } catch (error) {
             console.error('Error:', error);

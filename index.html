@@ -11,61 +11,21 @@
   <div id="three-container"></div>
   <div id="overlay">
     <h1>3-Style Algorithms</h1>
+    <div class="tab">
+      <button class="tablinks" onclick="setButtonCss(event)" id="corners">Corners</button>
+      <button class="tablinks" onclick="setButtonCss(event)" id="edges">Edges</button>
+    </div>
     <form id="pieces">
       <div>
         <h2>First piece</h2>
         <label for="firstPiece">Select first piece:</label>
-        <select id="firstPiece">
-          <option value="UBL">UBL (A)</option>
-          <option value="UBR">UBR (B)</option>
-          <option value="UFL">UFL (D)</option>
-          <option value="LBU">LBU (E)</option>
-          <option value="LFU">LFU (F)</option>
-          <option value="LDF">LDF (G)</option>
-          <option value="LDB">LDB (H)</option>
-          <option value="FUL">FUL (I)</option>
-          <option value="FDR">FDR (K)</option>
-          <option value="FDL">FDL (L)</option>
-          <option value="RUB">RUB (N)</option>
-          <option value="RDB">RDB (O)</option>
-          <option value="RDF">RDF (P)</option>
-          <option value="BUR">BUR (Q)</option>
-          <option value="BUL">BUL (R)</option>
-          <option value="BDL">BDL (S)</option>
-          <option value="BDR">BDR (T)</option>
-          <option value="DFL">DFL (U)</option>
-          <option value="DFR">DFR (V)</option>
-          <option value="DBR">DBR (W)</option>
-          <option value="DBL">DBL (X)</option>
-        </select>
+        <select id="firstPiece"></select>
       </div>
 
       <div>
         <h2>Second piece</h2>
         <label for="secondPiece">Select second piece:</label>
-        <select id="secondPiece">
-          <option value="UBL">UBL (A)</option>
-          <option value="UBR">UBR (B)</option>
-          <option value="UFL">UFL (D)</option>
-          <option value="LBU">LBU (E)</option>
-          <option value="LFU">LFU (F)</option>
-          <option value="LDF">LDF (G)</option>
-          <option value="LDB">LDB (H)</option>
-          <option value="FUL">FUL (I)</option>
-          <option value="FDR">FDR (K)</option>
-          <option value="FDL">FDL (L)</option>
-          <option value="RUB">RUB (N)</option>
-          <option value="RDB">RDB (O)</option>
-          <option value="RDF">RDF (P)</option>
-          <option value="BUR">BUR (Q)</option>
-          <option value="BUL">BUL (R)</option>
-          <option value="BDL">BDL (S)</option>
-          <option value="BDR">BDR (T)</option>
-          <option value="DFL">DFL (U)</option>
-          <option value="DFR">DFR (V)</option>
-          <option value="DBR">DBR (W)</option>
-          <option value="DBL">DBL (X)</option>
-        </select>
+        <select id="secondPiece"></select>
       </div>
 
       <button type="submit" id="formButton">View Algorithm</button>
@@ -91,6 +51,94 @@
   <script type="module">
     import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
     import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
+
+    const cornerPieces = [
+      { value: "UBL", label: "UBL (A)" },
+      { value: "UBR", label: "UBR (B)" },
+      { value: "UFL", label: "UFL (D)" },
+      { value: "LUB", label: "LUB (E)" },
+      { value: "LUF", label: "LUF (F)" },
+      { value: "LDF", label: "LDF (G)" },
+      { value: "LDB", label: "LDB (H)" },
+      { value: "FUL", label: "FUL (J)" },
+      { value: "FDL", label: "FDL (K)" },
+      { value: "FDR", label: "FDR (L)" },
+      { value: "RUF", label: "RUF (N)" },
+      { value: "RDF", label: "RDF (O)" },
+      { value: "RDB", label: "RDB (P)" },
+      { value: "BUR", label: "BUB (Q)" },
+      { value: "BUL", label: "BUR (R)" },
+      { value: "BDR", label: "BDR (S)" },
+      { value: "BDL", label: "BDL (T)" },
+      { value: "DFL", label: "DFL (U)" },
+      { value: "DFR", label: "DFR (V)" },
+      { value: "DBR", label: "DBR (W)" },
+      { value: "DBL", label: "DBL (X)" },
+    ];
+
+    const edgePieces = [
+      { value: "UB", label: "UB (A)" },
+      { value: "UR", label: "UR (B)" },
+      { value: "UL", label: "UL (D)" },
+      { value: "LU", label: "LU (E)" },
+      { value: "LF", label: "LF (F)" },
+      { value: "LD", label: "LD (G)" },
+      { value: "LB", label: "LB (H)" },
+      { value: "FR", label: "FR (J)" },
+      { value: "FD", label: "FD (K)" },
+      { value: "FL", label: "FL (L)" },
+      { value: "RU", label: "RU (M)" },
+      { value: "RB", label: "RB (N)" },
+      { value: "RD", label: "RD (O)" },
+      { value: "RF", label: "RF (P)" },
+      { value: "BU", label: "BU (Q)" },
+      { value: "BL", label: "BL (R)" },
+      { value: "BD", label: "BD (S)" },
+      { value: "BR", label: "BR (T)" },
+      { value: "DF", label: "DF (U)" },
+      { value: "DR", label: "DR (V)" },
+      { value: "DB", label: "DB (W)" },
+      { value: "DL", label: "DL (X)" },
+    ];
+
+    function updatePieceList(pieces) {
+      const firstSelect = document.getElementById("firstPiece");
+      const secondSelect = document.getElementById("secondPiece");
+
+      // Clear existing options
+      firstSelect.innerHTML = "";
+      secondSelect.innerHTML = "";
+
+      // Add new options
+      pieces.forEach(p => {
+        const option1 = document.createElement("option");
+        option1.value = p.value;
+        option1.textContent = p.label;
+        firstSelect.appendChild(option1);
+
+        const option2 = document.createElement("option");
+        option2.value = p.value;
+        option2.textContent = p.label;
+        secondSelect.appendChild(option2);
+      });
+    }
+
+    function setButtonCss(event) {
+      const tablinks = document.getElementsByClassName("tablinks");
+      for (let i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+      }
+      event.currentTarget.classList.add("active");
+
+      // Update selects depending on active tab
+      if (event.currentTarget.id === "corners") {
+        updatePieceList(cornerPieces);
+      } else if (event.currentTarget.id === "edges") {
+        updatePieceList(edgePieces);
+      }
+    }
+    window.setButtonCss = setButtonCss;
+    window.onload = updatePieceList(cornerPieces);
   </script>
 
   <!-- Your app logic -->
