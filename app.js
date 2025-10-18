@@ -188,11 +188,21 @@ function rotateCube(moves) {
         if (move === "F'") {
             rotations.push([0, 2, 1]);
         }
+        if (move === "F2") {
+            rotations.push([0, 2, 0]);
+            rotations.push([0, 2, 0]);
+        }
         if (move === "S") {
             rotations.push([0, 1, 0]);
         }
         if (move === "S'") {
             rotations.push([0, 1, 1]);
+        }
+        if (move === "B") {
+            rotations.push([0, 0, 1]);
+        }
+        if (move === "B'") {
+            rotations.push([0, 0, 0]);
         }
         if (move === "U'") {
             rotations.push([1, 2, 1])
@@ -272,6 +282,20 @@ function rotateCube(moves) {
         if (move === "M'") rotations.push([2, 1, 1]);
         if (move === "E") rotations.push([1, 1, 1]);      
         if (move === "E'") rotations.push([1, 1, 0]);
+        if (move == "Rw") {
+            rotations.push([2, 1, 1]);
+            rotations.push([2, 0, 1])
+        }
+        if (move == "Rw'") {
+            rotations.push([2, 1, 0]);
+            rotations.push([2, 0, 0])
+        }
+        if (move == "Uw2") {
+            rotations.push([1, 1, 0]);
+            rotations.push([1, 1, 0]);
+            rotations.push([1, 2, 0])
+            rotations.push([1, 2, 0])
+        }
     });
     handleRotations(rotations)
     handleRotations(rotations)
@@ -290,18 +314,28 @@ function animate(cube, scene, camera, renderer, orbit) {
 }
 
 function handleMove(move) {
-    console.log(move)
+    //console.log(move)
     if (move === "F") {
         rotateSide('x', 1, -1)
     }
     if (move === "F'") {
         rotateSide('x', 1, 1);
     }
+    if (move === "F2") {
+        rotateSide('x', 1, -1)
+        rotateSide('x', 1, -1)
+    }
     if (move === "S") {
         rotateSide('x', 0, -1)
     }
     if (move === "S'") {
         rotateSide('x', 0, 1);
+    }
+    if (move === "B") {
+        rotateSide('x', -1, 1)
+    }
+    if (move === "B'") {
+        rotateSide('x', -1, -1);
     }
     if (move === "U") {
         rotateSide('y', 1, -1);
@@ -388,6 +422,20 @@ function handleMove(move) {
         rotateSide('z', 1, -1);
         rotateSide('z', 0, -1);
         rotateSide('z', -1, -1);
+    }
+    if (move === "Rw") {
+        rotateSide('z', 0, 1);
+        rotateSide('z', -1, 1);
+    }
+    if (move === "Rw'") {
+        rotateSide('z', 0, -1);
+        rotateSide('z', -1, -1);
+    }
+    if (move === "Uw2") {
+        rotateSide('y', 1, -1);
+        rotateSide('y', 1, -1);
+        rotateSide('y', 0, -1);
+        rotateSide('y', 0, -1);
     }
 }
 
@@ -486,9 +534,12 @@ function setupFormListener() {
 
         //const url = `http://127.0.0.1:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
         let url = ''
-        console.log(cornerButton.classList)
-        if (cornerButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${cornersMap.get(first)}&secondPiece=${cornersMap.get(second)}`;
-        else if (edgeButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/edges?firstPiece=${edgesMap.get(first)}&secondPiece=${edgesMap.get(second)}`;
+
+        //if (cornerButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${cornersMap.get(first)}&secondPiece=${cornersMap.get(second)}`;
+        //else if (edgeButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/edges?firstPiece=${edgesMap.get(first)}&secondPiece=${edgesMap.get(second)}`;
+
+        if (cornerButton.classList.contains('active')) url = `https://3styleapi.vercel.app/get_algorithm/corners?firstPiece=${cornersMap.get(first)}&secondPiece=${cornersMap.get(second)}`;
+        else if (edgeButton.classList.contains('active')) url = `https://3styleapi.vercel.app/get_algorithm/edges?firstPiece=${edgesMap.get(first)}&secondPiece=${edgesMap.get(second)}`;
 
         try {
             const response = await fetch(url, { method: 'GET' });
