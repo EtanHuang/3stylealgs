@@ -1,5 +1,5 @@
-import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
-import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
+import * as THREE from "https://unpkg.com/three@0.128.0/build/three.module.js";
+import { OrbitControls } from "https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js";
 
 const cornersMap = new Map([
   ["UBL", 0], ["UBR", 1], ["UFL", 2], ["LBU", 3], ["LFU", 4], ["LDF", 5], ["LDB", 6],
@@ -37,7 +37,6 @@ let all_moves = [];
 document.addEventListener('DOMContentLoaded', () => {
     initialize();
     setupFormListener();
-    // handleRotations();
 });
 
 function initialize() {
@@ -164,12 +163,14 @@ function rotateSide(axis, layer, direction) {
     });
 }
 
+// handleRotations and rotateCube sets up the cube upon pressing "View Algorithm"
 function handleRotations(rotations) {
     const axes = ['x', 'y', 'z'];
     const layers = [-1, 0, 1];
     const directions = [-1, 1];
 
-    rotations.forEach(r => {
+    rotations.forEach(r => 
+        {
             const axis = axes[r[0]];
             const layer = layers[r[1]];
             const direction = directions[r[2]];
@@ -278,10 +279,18 @@ function rotateCube(moves) {
             rotations.push([1, 1, 0]);
             rotations.push([1, 1, 0]);
         }
-        if (move === "M") rotations.push([2, 1, 0]);     
-        if (move === "M'") rotations.push([2, 1, 1]);
-        if (move === "E") rotations.push([1, 1, 1]);      
-        if (move === "E'") rotations.push([1, 1, 0]);
+        if (move === "M") {
+            rotations.push([2, 1, 0]);     
+        }
+        if (move === "M'") {
+            rotations.push([2, 1, 1]);
+        }
+        if (move === "E") {
+            rotations.push([1, 1, 1]);   
+        }   
+        if (move === "E'") {
+            rotations.push([1, 1, 0]);
+        }
         if (move == "Rw") {
             rotations.push([2, 1, 1]);
             rotations.push([2, 0, 1])
@@ -301,7 +310,6 @@ function rotateCube(moves) {
     handleRotations(rotations)
 }
 
-
 // Function to animate the cube
 function animate(cube, scene, camera, renderer, orbit) {
     function animateLoop() {
@@ -313,6 +321,7 @@ function animate(cube, scene, camera, renderer, orbit) {
     animateLoop();
 }
 
+// handles each move one by one 
 function handleMove(move) {
     //console.log(move)
     if (move === "F") {
@@ -449,7 +458,6 @@ function getInverseMove(move) {
     }
 }
 
-
 function displayMoves(movesString) {
     const movesContainer = document.getElementById('movesResult');
     movesContainer.innerHTML = ''; 
@@ -485,12 +493,12 @@ function highlightMove(current_move) {
         var next_move_index = `move-${current_move + 1}`;
         var move_index = "move-" + current_move;
         var previous_move_index = `move-${current_move - 1}`;
-        var next_move_letter = document.getElementById(next_move_index);
-        var current_move_letter = document.getElementById(move_index);
-        var previous_move_letter = document.getElementById(previous_move_index);
-        next_move_letter.classList.remove('highlight');
-        current_move_letter.classList.add('highlight');
-        previous_move_letter.classList.remove('highlight');
+        var next_move_span = document.getElementById(next_move_index);
+        var current_move_span = document.getElementById(move_index);
+        var previous_move_span = document.getElementById(previous_move_index);
+        next_move_span.classList.remove('highlight');
+        current_move_span.classList.add('highlight');
+        previous_move_span.classList.remove('highlight');
     }
 }
 
@@ -532,7 +540,6 @@ function setupFormListener() {
         document.getElementById('firstPieceName').innerHTML = first;
         document.getElementById('secondPieceName').innerHTML = second;
 
-        //const url = `http://127.0.0.1:5000/get_algorithm?firstPiece=${piecesMap.get(first)}&secondPiece=${piecesMap.get(second)}`;
         let url = ''
 
         //if (cornerButton.classList.contains('active')) url = `http://127.0.0.1:5000/get_algorithm/corners?firstPiece=${cornersMap.get(first)}&secondPiece=${cornersMap.get(second)}`;

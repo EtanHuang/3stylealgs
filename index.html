@@ -6,6 +6,13 @@
   <title>3 Style Visualizer</title>
   <link rel="icon" href="333bf.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+  </script>
 </head>
 <body>
   <div id="three-container"></div>
@@ -49,8 +56,8 @@
 
   <!-- Three.js -->
   <script type="module">
-    import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
-    import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
+    // import * as THREE from "https://cdn.skypack.dev/three@0.128.0";
+    // import { OrbitControls } from "https://cdn.skypack.dev/three@0.128.0/examples/jsm/controls/OrbitControls.js";
 
     const cornerPieces = [
       { value: "UBL", label: "UBL (A)" },
