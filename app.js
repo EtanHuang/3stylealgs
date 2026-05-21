@@ -33,6 +33,15 @@ orbit.minDistance = 5;
 let cubelets = [];
 let all_moves = [];
 
+let isAnimating = false;
+let animationQueue = [];
+let currentPivotGroup = null;
+let activeRotationLayers = [];
+let currentAnimationAxis = '';
+let currentAnimationDirection = 0;
+let currentAnimationTargetAngle = 0;
+let currentAnimationProgress = 0;
+const ANIMATION_SPEED = 0.09;
 
 document.addEventListener('DOMContentLoaded', () => {
     initialize();
@@ -314,8 +323,45 @@ function rotateCube(moves) {
 function animate(cube, scene, camera, renderer, orbit) {
     function animateLoop() {
         requestAnimationFrame(animateLoop);  
-        //TWEEN.update();
-        orbit.update();  // keep controls smooth + prevent snapping
+        
+        // Correctly processes active pivot rotation transformations
+        if (isAnimating && currentPivotGroup && activeRotationLayers.length > 0) {
+            const axis = activeRotationLayers[0].axis;
+            const direction = activeRotationLayers[0].direction;
+            const multiplier = activeRotationLayers[0].multiplier;
+            
+            const totalTargetAngle = direction * (Math.PI / 2) * multiplier;
+            let step = totalTargetAngle * ANIMATION_SPEED;
+            
+            currentAnimationProgress += step;
+            currentPivotGroup.rotation[axis] += step;
+
+            // Check if rotation has fully satisfied transition angle goals
+            if (Math.abs(currentAnimationProgress) >= Math.abs(totalTargetAngle)) {
+                currentPivotGroup.rotation[axis] = totalTargetAngle;
+                
+                // Clear pivot structures and return pieces to global hierarchy
+                const tempChildren = [...currentPivotGroup.children];
+                tempChildren.forEach(cubelet => {
+                    scene.attach(cubelet);
+                    cubelet.position.round(); 
+                });
+
+                scene.remove(currentPivotGroup);
+                currentPivotGroup = null;
+                activeRotationLayers = [];
+                currentAnimationProgress = 0;
+                isAnimating = false;
+
+                // Process the next move if the user was spamming keys
+                if (animationQueue.length > 0) {
+                    const nextMove = animationQueue.shift();
+                    handleMove(nextMove);
+                }
+            }
+        }
+
+        orbit.update();  
         renderer.render(scene, camera);  
     }
     animateLoop();
@@ -323,129 +369,157 @@ function animate(cube, scene, camera, renderer, orbit) {
 
 // handles each move one by one 
 function handleMove(move) {
-    //console.log(move)
+    if (isAnimating) {
+        animationQueue.push(move); // Queue moves if user presses arrows too fast
+        return;
+    }
+
+    // This temporary array will collect the layers that need to move for this specific input
+    // Each target format: { axis: 'x'|'y'|'z', layer: -1|0|1, direction: -1|1, multiplier: 1|2 }
+    let targets = [];
+
     if (move === "F") {
-        rotateSide('x', 1, -1)
+        targets.push({ axis: 'x', layer: 1, direction: -1, multiplier: 1 });
     }
     if (move === "F'") {
-        rotateSide('x', 1, 1);
+        targets.push({ axis: 'x', layer: 1, direction: 1, multiplier: 1 });
     }
     if (move === "F2") {
-        rotateSide('x', 1, -1)
-        rotateSide('x', 1, -1)
+        targets.push({ axis: 'x', layer: 1, direction: -1, multiplier: 2 });
     }
     if (move === "S") {
-        rotateSide('x', 0, -1)
+        targets.push({ axis: 'x', layer: 0, direction: -1, multiplier: 1 });
     }
     if (move === "S'") {
-        rotateSide('x', 0, 1);
+        targets.push({ axis: 'x', layer: 0, direction: 1, multiplier: 1 });
     }
     if (move === "B") {
-        rotateSide('x', -1, 1)
+        targets.push({ axis: 'x', layer: -1, direction: 1, multiplier: 1 });
     }
     if (move === "B'") {
-        rotateSide('x', -1, -1);
+        targets.push({ axis: 'x', layer: -1, direction: -1, multiplier: 1 });
     }
     if (move === "U") {
-        rotateSide('y', 1, -1);
+        targets.push({ axis: 'y', layer: 1, direction: -1, multiplier: 1 });
     }
     if (move === "U'") {
-        rotateSide('y', 1, 1);
+        targets.push({ axis: 'y', layer: 1, direction: 1, multiplier: 1 });
     }
     if (move === "U2" || move === "U2'") {
-        rotateSide('y', 1, -1);
-        rotateSide('y', 1, -1);
+        targets.push({ axis: 'y', layer: 1, direction: -1, multiplier: 2 });
     }
     if (move === "D'") {
-        rotateSide('y', -1, -1);
+        targets.push({ axis: 'y', layer: -1, direction: -1, multiplier: 1 });
     }
     if (move === "D") {
-        rotateSide('y', -1, 1);
+        targets.push({ axis: 'y', layer: -1, direction: 1, multiplier: 1 });
     }
     if (move === "E") {
-        rotateSide('y', 0, 1);
+        targets.push({ axis: 'y', layer: 0, direction: 1, multiplier: 1 });
     }
     if (move === "E'") {
-        rotateSide('y', 0, -1);
+        targets.push({ axis: 'y', layer: 0, direction: -1, multiplier: 1 });
     }
     if (move === "E2") {
-        rotateSide('y', 0, -1);
-        rotateSide('y', 0, -1);
+        targets.push({ axis: 'y', layer: 0, direction: -1, multiplier: 2 });
     }
     if (move === "D2") {
-        rotateSide('y', -1, 1);
-        rotateSide('y', -1, 1);
+        targets.push({ axis: 'y', layer: -1, direction: 1, multiplier: 2 });
     }
     if (move === "L") {
-        rotateSide('z', 1, -1);
+        targets.push({ axis: 'z', layer: 1, direction: -1, multiplier: 1 });
     }
     if (move === "L2") {
-        rotateSide('z', 1, -1);
-        rotateSide('z', 1, -1);
+        targets.push({ axis: 'z', layer: 1, direction: -1, multiplier: 2 });
     }
     if (move === "L'") {
-        rotateSide('z', 1, 1);
+        targets.push({ axis: 'z', layer: 1, direction: 1, multiplier: 1 });
     }
     if (move === "R'") {
-        rotateSide('z', -1, -1);
+        targets.push({ axis: 'z', layer: -1, direction: -1, multiplier: 1 });
     }
     if (move === "R") {
-        rotateSide('z', -1, 1);
+        targets.push({ axis: 'z', layer: -1, direction: 1, multiplier: 1 });
     }
     if (move === "R2") {
-        rotateSide('z', -1, 1);
-        rotateSide('z', -1, 1);
+        targets.push({ axis: 'z', layer: -1, direction: 1, multiplier: 2 });
     }
     if (move === "Lw") {
-        rotateSide('z', 1, -1);
-        rotateSide('z', 0, -1);
+        targets.push({ axis: 'z', layer: 1, direction: -1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: 0, direction: -1, multiplier: 1 });
     }
     if (move === "Lw'") {
-        rotateSide('z', 1, 1);
-        rotateSide('z', 0, 1);
+        targets.push({ axis: 'z', layer: 1, direction: 1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: 0, direction: 1, multiplier: 1 });
     }
     if (move === "Uw") {
-        rotateSide('y', 1, -1);
-        rotateSide('y', 0, -1);
+        targets.push({ axis: 'y', layer: 1, direction: -1, multiplier: 1 });
+        targets.push({ axis: 'y', layer: 0, direction: -1, multiplier: 1 });
     }
     if (move === "Uw'") {
-        rotateSide('y', 1, 1);
-        rotateSide('y', 0, 1);
+        targets.push({ axis: 'y', layer: 1, direction: 1, multiplier: 1 });
+        targets.push({ axis: 'y', layer: 0, direction: 1, multiplier: 1 });
     }
     if (move === "M") {
-        rotateSide('z', 0, -1);
+        targets.push({ axis: 'z', layer: 0, direction: -1, multiplier: 1 });
     }
     if (move === "M'") {
-        rotateSide('z', 0, 1);
+        targets.push({ axis: 'z', layer: 0, direction: 1, multiplier: 1 });
     }
     if (move === "M2") {
-        rotateSide('z', 0, 1);
-        rotateSide('z', 0, 1);
+        targets.push({ axis: 'z', layer: 0, direction: 1, multiplier: 2 });
     }
     if (move === "x") {
-        rotateSide('z', 1, 1);
-        rotateSide('z', 0, 1);
-        rotateSide('z', -1, 1);
+        targets.push({ axis: 'z', layer: 1, direction: 1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: 0, direction: 1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: -1, direction: 1, multiplier: 1 });
     }
     if (move === "x'") {
-        rotateSide('z', 1, -1);
-        rotateSide('z', 0, -1);
-        rotateSide('z', -1, -1);
+        targets.push({ axis: 'z', layer: 1, direction: -1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: 0, direction: -1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: -1, direction: -1, multiplier: 1 });
     }
     if (move === "Rw") {
-        rotateSide('z', 0, 1);
-        rotateSide('z', -1, 1);
+        targets.push({ axis: 'z', layer: 0, direction: 1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: -1, direction: 1, multiplier: 1 });
     }
     if (move === "Rw'") {
-        rotateSide('z', 0, -1);
-        rotateSide('z', -1, -1);
+        targets.push({ axis: 'z', layer: 0, direction: -1, multiplier: 1 });
+        targets.push({ axis: 'z', layer: -1, direction: -1, multiplier: 1 });
     }
     if (move === "Uw2") {
-        rotateSide('y', 1, -1);
-        rotateSide('y', 1, -1);
-        rotateSide('y', 0, -1);
-        rotateSide('y', 0, -1);
+        targets.push({ axis: 'y', layer: 1, direction: -1, multiplier: 2 });
+        targets.push({ axis: 'y', layer: 0, direction: -1, multiplier: 2 });
     }
+
+    if (targets.length > 0) {
+        setupSmoothAnimation(targets);
+    }
+}
+
+function setupSmoothAnimation(targets) {
+    isAnimating = true;
+    currentAnimationProgress = 0;
+    activeRotationLayers = [];
+
+    // Create a new pivot group for this rotation instance
+    currentPivotGroup = new THREE.Group();
+    scene.add(currentPivotGroup);
+
+    // Read the primary target properties
+    const primaryAxis = targets[0].axis;
+    const multiplier = targets[0].multiplier; 
+    
+    // Store configurations for completion later
+    activeRotationLayers = targets;
+
+    // Filter out and temporarily grab all cubelets across any of the target layers
+    cubelets.forEach(cubelet => {
+        const matchesLayer = targets.some(t => Math.round(cubelet.position[primaryAxis]) === t.layer);
+        if (matchesLayer) {
+            currentPivotGroup.attach(cubelet); // attach preserves world space coordinates!
+        }
+    });
 }
 
 function getInverseMove(move) {
